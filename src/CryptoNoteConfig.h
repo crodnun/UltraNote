@@ -121,8 +121,8 @@ const size_t   BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT        =  10000;  //by def
 const size_t   BLOCKS_SYNCHRONIZING_DEFAULT_COUNT            =  200;    //by default, blocks count in blocks downloading
 const size_t   COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT         =  1000;
 
-const int      P2P_DEFAULT_PORT                              = 30000;
-const int      RPC_DEFAULT_PORT                              = 31000;
+const int      P2P_DEFAULT_PORT                              = 63000;
+const int      RPC_DEFAULT_PORT                              = 64000;
 
 const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT                =  1000;
 const size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT                 =  5000;
@@ -140,14 +140,14 @@ const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 5000;          //
 const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "0000000000000000000000000000000000000000000000000000000011111111";
 
 const std::initializer_list<const char*> SEED_NODES = {
-   "seed1.ultranote.org:30000",
-   "seed2.ultranote.org:30000",
-   "seed3.ultranote.org:30000",
-   "seed4.ultranote.org:30000",
-   "seed5.ultranote.org:30000",
-   "seed6.ultranote.org:30000",
-   "seed7.ultranote.org:30000",
-   "seed8.ultranote.org:30000",
+   "seed1.ultranote.org:63000",
+   "seed2.ultranote.org:63000",
+   "seed3.ultranote.org:63000",
+   "seed4.ultranote.org:63000",
+   "seed5.ultranote.org:63000",
+   "seed6.ultranote.org:63000",
+   "seed7.ultranote.org:63000",
+   "seed8.ultranote.org:63000",
 };
 
 struct CheckpointData {
@@ -209,12 +209,49 @@ const std::initializer_list<CheckpointData> CHECKPOINTS = {
  { 162344, "5ca60da58572627913aa7dac32d6985e96b4b431aa4077e3d193a76b03f7a5d7" },
  //
  
+ { 164332, "577cf64d91d3637ce6d11ab115b33214908f5ce579d3c3e05f916184db901b2d" },
+ { 164350, "db9043b38796f3f700f54d14c00a37c5fff3702c73402d190cb6a5fc67fd9e18" },
+ { 164382, "7eedbf762f926f5db4416683b8e19dc93c69176778077c5706c70fc79a3d3b6e" },
+ { 164433, "0d6f935c0b0d1ccfa285f8ba74d572a80f391ff4d94ee84f1e5f83f3495d3112" },
+ { 164459, "898caac3efdc7fb053efd35141293b6b7837209f29fddb76050237ee6fbf6b73" },
+ { 164465, "0068e371e6c135ec770a9af696b2c51a680108fdcc8cc7abc3eb330d8d82f6cd" },
+ { 164503, "de012fe2a7741fec20d77d23cc9a2b2322c9c5ccb96e91bf0734dc3f8fc9d70e" },
+ { 114124, "ae23b4e002d6ace6d7f3338ca767a5af959cd317ddaa1af7326b39b1f398d15c" },
+ { 114125, "692d44097f1965555da0d6198c79c72bd5ebc8175553531f92ef1287b1d6d7de" },
+ { 114126, "01ab8f89ff810af1407ebff6d3951184d84b4ed8fe6881a04ebe48f402fa6ee3" },
+ { 114127, "9db4950326d3bfc8d6db40d22017a0afd0ef69044a6ae807b8c3a43c2042d9c0" },
+ { 114540, "1efdb6d9265c3138213eb2b733fca9a3d33c474a4b9286b561c96b3017082a32" },
+ { 114560, "eab548a8102fa6ef6fe50c7f8ac3954e12db472ca5b1da2722cf4d4a59f5e32f" },
+ { 114580, "c970dcf9a4a5c78642c7aa7b7daff0b395d6323557cf54b96190fa7f41a37952" },
+ { 114684, "179c80e9ca15b11e59df5970c92a82326618a94f256fc7ad9669899c87bebdb2" },
+ { 114685, "289cd8188f58306af953a099d2fadba5647711bbc77102ade4dbc607d973aa09" },
+ { 114686, "6a634121bd4c63198d924237501383a51b5491e30fa57a7aa6d41a13512ddc3c" },
+ { 114687, "ca74f18e54b1e0c8c623ca4956d90bb4620f03dcc858189161eaf16ce5840bd4" },
+ { 114688, "6b7283c86bd5509619dcc63d1f3da1ed884db3fe3fbafaf310407b35507a6ff1" },
+ { 114689, "2a270477326bfc0bcd7d394f924a206e9f2e1ecddcaa145b0abf11e147103224" },
+ { 114745, "ee42567b0027ed982775ff10cf21f1849d04fed1263c32be9abe8301e1db78fa" },
+ { 114750, "dc02f008cf4d16f4a9b6c8246b8f4f28b8ef0ac854d62a685da39507f2c7dc93" },
+ { 114760, "94b906bf900980ba05a611410842fa0aaa7673df6f95239de36d3b7f8f8aa82c" },
+ { 114770, "39dc9a5466741a8a04782059926b3d9b2c11c784c4f5b8bb90085bb56724e1d4" },
+ { 115000, "2e3686d4371be0e80b55f860ab506dc3172117a41a63fd9ad4787153937b0d69" },
+ { 115001, "274ab9f4167c8a67808cc2ce0d916db4c7700196ccc404799d41d4545043a9b9" },
+ { 153702, "5eb63d86e6afa2910b7b6ebb66e947031979af30b333a87b6737eaff45c0db1a" },
+ { 155147, "6fe27d8f59ada032434dfbcf23d8e4769473e94c8fb5e468f5ae428331739c0d" },
+ { 158478, "3057adb5cbe3af55a2b78c1b54d19d609157e2e2e8e49bb02e2f44f1a1e020f9" },
+ { 162313, "8efa9ad5e1f2bdbbd1aa3ec3f1217781fba960da803bdc024b5f3a39e4bb180a" },
+ { 162325, "3e509771b3e0b06e851843b8ff651a790c9f46fc1b6648d53bd73901a1886166" },
+ { 162338, "bde957d99a09f70925e02f535a2dfe63274c0c2e18f936bda9aadd9c6b3ba6da" },
+ { 162340, "a7726d8f86ff67a8d66f665d65013a04a6e2dc5c650d02b5999842b9ef9e95e1" },
+ { 162342, "ccc56b74cc2b55802cba745f809f4b344eb447006d8bef5302bf8597337a0d92" },
+ { 162344, "5ca60da58572627913aa7dac32d6985e96b4b431aa4077e3d193a76b03f7a5d7" },
+ 
 };
 
 // {BlockIndex , Version}
 const std::map<const uint32_t, const uint8_t> Version = {
     {34147, 1},
     {115000, 2},
+	{170000, 3},
 };
 
 // {BlockIndex , Version}
