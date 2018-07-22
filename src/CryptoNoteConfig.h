@@ -121,8 +121,8 @@ const size_t   BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT        =  10000;  //by def
 const size_t   BLOCKS_SYNCHRONIZING_DEFAULT_COUNT            =  200;    //by default, blocks count in blocks downloading
 const size_t   COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT         =  1000;
 
-const int      P2P_DEFAULT_PORT                              = 63000;
-const int      RPC_DEFAULT_PORT                              = 64000;
+const int      P2P_DEFAULT_PORT                              = 30000;
+const int      RPC_DEFAULT_PORT                              = 31000;
 
 const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT                =  1000;
 const size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT                 =  5000;
@@ -140,14 +140,14 @@ const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 5000;          //
 const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "0000000000000000000000000000000000000000000000000000000011111111";
 
 const std::initializer_list<const char*> SEED_NODES = {
-   "seed1.ultranote.org:63000",
-   "seed2.ultranote.org:63000",
-   "seed3.ultranote.org:63000",
-   "seed4.ultranote.org:63000",
-   "seed5.ultranote.org:63000",
-   "seed6.ultranote.org:63000",
-   "seed7.ultranote.org:63000",
-   "seed8.ultranote.org:63000",
+   "seed1.ultranote.org:30000",
+   "seed2.ultranote.org:30000",
+   "seed3.ultranote.org:30000",
+   "seed4.ultranote.org:30000",
+   "seed5.ultranote.org:30000",
+   "seed6.ultranote.org:30000",
+   "seed7.ultranote.org:30000",
+   "seed8.ultranote.org:30000",
 };
 
 struct CheckpointData {
