@@ -227,9 +227,9 @@ const std::map<const uint32_t, const uint8_t> Version = {
 
 // {BlockIndex , Version}
 const std::map<const uint32_t, const uint8_t> TestNetVersion = {
-    {120, 1},
-    {250, 2},
-    {350, 3},
+    {100, 1},
+    {200, 2},
+    {300, 3},
 };
 
 // {BlockIndex , Hash}

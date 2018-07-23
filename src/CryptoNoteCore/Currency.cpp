@@ -1,4 +1,4 @@
-    // Copyright (c) 2011-2017 The Cryptonote developers
+// Copyright (c) 2011-2017 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN developers
 // Copyright (c) 2016-2017 BXC developers
 // Copyright (c) 2017 UltraNote developers
@@ -620,11 +620,12 @@ difficulty_type Currency::nextDifficulty2(std::vector<uint64_t> timestamps,
   }
   
   uint64_t nextDiff = (low + adjustedTotalTimespan - 1) / adjustedTotalTimespan;
-  if (nextDiff < 1) nextDiff = 1;
+ if (nextDiff < 1) 
+  nextDiff = 1;
   return nextDiff;
-}
+ }
 
-//@nesterow: Third diff algo, zawy's LWMA
+//@nesterow: Third@ diff algo, zawy's LWMA
 
 // LWMA difficulty algorithm
 // Copyright (c) 2017-2018 Zawy
@@ -632,16 +633,15 @@ difficulty_type Currency::nextDifficulty2(std::vector<uint64_t> timestamps,
 // https://github.com/zawy12/difficulty-algorithms/issues/3#issuecomment-375600752
 difficulty_type Currency::nextDifficulty3(std::vector<uint64_t> timestamps,
   std::vector<difficulty_type> cumulativeDifficulties) const {
-  
+
   const int64_t T = static_cast<int64_t>(m_difficultyTarget);
-  
-  int64_t N = static_cast<int64_t>(parameters::DIFFICULTY_WINDOW_V2) - 1;
-  
-  if ( timestamps.size() < 4 )
+
+  int64_t N = static_cast<int64_t>(parameters::DIFFICULTY_WINDOW_V2) -1;
+
+  if ( timestamps.size() < 4)
   { 
     return 1;
-  }
-  else if(
+  } else if(
     static_cast<int64_t>(timestamps.size()) < N + 1 // -Wsign-compare
   ) 
   {
@@ -652,7 +652,7 @@ difficulty_type Currency::nextDifficulty3(std::vector<uint64_t> timestamps,
     timestamps.resize(N + 1);
     cumulativeDifficulties.resize(N + 1);
   }
-  
+
   const double adjust = 0.998;
   
   // The divisor k normalizes the LWMA sum to a standard LWMA.
@@ -660,35 +660,35 @@ difficulty_type Currency::nextDifficulty3(std::vector<uint64_t> timestamps,
   
   double LWMA(0), sum_inverse_D(0), harmonic_mean_D(0), nextDifficulty(0);
   int64_t solveTime(0);
-  uint64_t difficulty(0);
+  uint64_t difficulty(0); 
   
   // Loop through N most recent blocks. N is most recently solved block.
-  for (int64_t i = 1; i <= N; i++) {
-    solveTime = static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i - 1]);
-    solveTime = std::min<int64_t>((T * 7), std::max<int64_t>(solveTime, (-7 * T)));
-    difficulty = cumulativeDifficulties[i] - cumulativeDifficulties[i - 1];
-    LWMA += (int64_t)(solveTime * i) / k;
-    sum_inverse_D += 1 / static_cast<double>(difficulty);
+    for (int64_t i = 1; i <= N; i++) {
+      solveTime = static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i - 1]);
+      solveTime = std::min<int64_t>((T*7), std::max<int64_t>(solveTime, (-7 * T)));
+      difficulty = cumulativeDifficulties[i] - cumulativeDifficulties[i - 1];
+      LWMA += (int64_t)(solveTime * i) / k;
+      sum_inverse_D += 1 / static_cast<double>(difficulty);
   }
-  
+
   harmonic_mean_D = N / sum_inverse_D * adjust;
-  
+
   // Limit LWMA same as Bitcoin's 1/4 in case something unforeseen occurs.
   if (static_cast<int64_t>(boost::math::round(LWMA)) < T / 4)
     LWMA = static_cast<double>(T / 4);
-  
-  
+
   nextDifficulty = harmonic_mean_D * T / LWMA;
   uint64_t next_difficulty = static_cast<uint64_t>(nextDifficulty);
-  
-  //@karbowanec: minimum limit
+
+ //@karbowanec: minimum limit
+  logger(TRACE) << "Timestamps size: " << timestamps.size();
+  logger(TRACE) << "Block expected diff (next_difficulty LWMA-1): " << next_difficulty << ".  (TESTNET DEBUGGING)";
   if (next_difficulty < 100000) {
     next_difficulty = 100000;
   }
-  
   return next_difficulty;
-  
 }
+
 
 // LWMA-2 difficulty algorithm
 // Copyright (c) 2017-2018 Zawy, MIT License
@@ -696,25 +696,34 @@ difficulty_type Currency::nextDifficulty3(std::vector<uint64_t> timestamps,
 // See commented version below for required config file changes.
 // Make sure timestamps and cumulativeDifficulties vectors are sized N+1
 // and most recent element (Nth one) is most recently solved block.
-
 // difficulty_type should be uint64_t
-difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps,
-    std::vector<difficulty_type> cumulative_difficulties) const {
-    
-    int64_t  T = static_cast<int64_t>(m_difficultyTarget);
-    int64_t  N = static_cast<int64_t>(parameters::DIFFICULTY_WINDOW_V3) -1; // N=45, 60, and 90 for T=600, 120, 60.
+difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps, std::vector<difficulty_type> cumulativeDifficulties) const {
+    int64_t  T = parameters::DIFFICULTY_TARGET;
+    int64_t  N = parameters::DIFFICULTY_WINDOW_V3 - 1; // N=45, 60, and 90 for T=600, 120, 60.
     int64_t  FTL = static_cast<int64_t>(parameters::CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V3); // FTL=3xT
-    int64_t  L(0), ST, sum_3_ST(0), next_D, prev_D, j=0;
+    int64_t  L(0), ST, sum_3_ST(0), next_D, prev_D;
+
+    logger(TRACE) << "Timestamps size: " << timestamps.size() << ", expected more than " << static_cast<uint64_t>(N);
+
+    if (timestamps.size() <= static_cast<uint64_t>(N))
+    {
+        return 1000;
+    }
+
+  //  uint64_t initial_difficulty_guess = 100;
+  //  if (timestamps.size() <= static_cast<uint64_t>(N)) {
+  //      return initial_difficulty_guess;
+  //  }
     
     for ( int64_t i = 1; i <= N; i++) {
-        ST = std::max(-FTL, std::min( static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i-1]), 6*T));
+        ST = std::max(-FTL, std::min( static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i - 1]), 6*T));
         L +=  ST * i ;
         if ( i > N-3 ) { sum_3_ST += ST; }
     }
-    next_D = (static_cast<int64_t>(cumulative_difficulties[N] - cumulative_difficulties[0])*T*(N+1)*99)/(100*2*L);
+    next_D = ((cumulativeDifficulties[N] - cumulativeDifficulties[0])*T*(N+1)*99)/(100*2*L);
         
     // implement LWMA-2 changes from LWMA
-    prev_D = cumulative_difficulties[N] - cumulative_difficulties[N-1];
+    prev_D = cumulativeDifficulties[N] - cumulativeDifficulties[N-1];
     // If N !=60 adjust 3 integers: 67*N/60, 150*60/N, 110*60/N
     next_D = std::max((prev_D*67)/100, std::min( next_D, (prev_D*150)/100));
     if ( sum_3_ST < (8*T)/10) {  next_D = std::max(next_D,(prev_D*110)/100); }
