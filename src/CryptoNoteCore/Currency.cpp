@@ -707,7 +707,7 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps, std::
 
     if (timestamps.size() <= static_cast<uint64_t>(N))
     {
-        return 1000;
+        return 100000;
     }
 
   //  uint64_t initial_difficulty_guess = 100;
