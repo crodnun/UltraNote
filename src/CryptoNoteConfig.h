@@ -19,6 +19,8 @@ namespace CryptoNote {
 
 namespace parameters {
 
+const uint64_t DIFFICULTY_TARGET                             = 120; // seconds
+
 const uint64_t CRYPTONOTE_MAX_BLOCK_NUMBER                   = 500000000;
 const size_t   CRYPTONOTE_MAX_BLOCK_BLOB_SIZE                = 500000000;
 const size_t   CRYPTONOTE_MAX_TX_SIZE                        = 1000000000;
@@ -26,6 +28,7 @@ const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = 0x1a2638; // addr
 const size_t   CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW          = 10;
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT            = 60 * 60 * 2;
 const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2         = 6 * 60 * 2;
+const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V3         = DIFFICULTY_TARGET * 3;
 const uint64_t CRYPTONOTE_DEFAULT_TX_SPENDABLE_AGE           = 10;
 
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW             = 60;
@@ -43,7 +46,6 @@ const uint64_t COIN                                          = UINT64_C(1000000)
 const uint64_t MINIMUM_FEE                                   = UINT64_C(1000);        // pow(10, 3)
 const uint64_t DEFAULT_DUST_THRESHOLD                        = UINT64_C(100);         // pow(10, 2)
 
-const uint64_t DIFFICULTY_TARGET                             = 120; // seconds
 const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = 24 * 60 * 60 / DIFFICULTY_TARGET;
 
 const size_t   DIFFICULTY_WINDOW                             = 20;
@@ -51,6 +53,7 @@ const size_t   DIFFICULTY_CUT                                = 5;
 
 const size_t   DIFFICULTY_WINDOW_V1                          = 35;
 const size_t   DIFFICULTY_WINDOW_V2                          = 60;
+const size_t   DIFFICULTY_WINDOW_V3                          = 60 + 1;
 
 const size_t   DIFFICULTY_LAG                                = 1; //not used in v1,v2
 
@@ -279,21 +282,20 @@ const std::initializer_list<CheckpointData> CHECKPOINTS = {
  { 167335, "ec607f479a9a0db49ee0b07ae8a160a7b52cc0b72a928c7df7b6f108fc172744" },
  { 167339, "3c372dad4ba00541aba74ee862d08c90ebea75d0ee9e4217151a9375467ac818" },
  { 167340, "19e6d417526e07131575c99d0ea5e2249be6dfce1a4ed638332307b41135632d" },
- 
 };
 
 // {BlockIndex , Version}
 const std::map<const uint32_t, const uint8_t> Version = {
     {34147, 1},
     {115000, 2},
-	{170000, 3},
+    {170000, 3},
 };
 
 // {BlockIndex , Version}
 const std::map<const uint32_t, const uint8_t> TestNetVersion = {
     {120, 1},
     {250, 2},
-	{330, 3},
+    {330, 3},
 };
 
 // {BlockIndex , Hash}

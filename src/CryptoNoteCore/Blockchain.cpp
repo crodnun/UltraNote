@@ -694,9 +694,12 @@ difficulty_type Blockchain::getDifficultyForNextBlock() {
     difficiltyBlocksCount = static_cast<uint64_t>(m_currency.difficultyBlocksCount2());
   }
   else if(version == 2){
+    difficiltyBlocksCount = static_cast<uint64_t>(m_currency.difficultyBlocksCount3());
+  }
+  else if(version == 3){
     difficiltyBlocksCount = static_cast<uint64_t>(m_currency.difficultyBlocksCount());
   }
-  
+
   //!!!
   size_t offset = m_blocks.size() - std::min(m_blocks.size(), difficiltyBlocksCount);
   if (offset == 0) {
@@ -708,14 +711,18 @@ difficulty_type Blockchain::getDifficultyForNextBlock() {
     commulative_difficulties.push_back(m_blocks[offset].cumulative_difficulty);
   }
   if(version == 0){
-    logger(DEBUGGING) << "Using legacy difficulty algo (v1)";
+    logger(DEBUGGING) << "Using legacy difficulty algo (v1) and the timestamp size now is: " << timestamps.size();
     return m_currency.nextDifficulty1(timestamps, commulative_difficulties);
   }
   else if(version == 1){
-    logger(DEBUGGING) << "Using Sumokoin  difficulty algo (v2)";
+    logger(DEBUGGING) << "Using Sumokoin  difficulty algo (v2) and the timestamp size now is: " << timestamps.size();
     return m_currency.nextDifficulty2(timestamps, commulative_difficulties);
   }
-  logger(DEBUGGING) << "Using zawy's LWMA difficulty algo (latest)";
+  else if(version == 2){
+    logger(DEBUGGING) << "Using zawy's LWMA difficulty algo (v3) and the timestamp size now is: " << timestamps.size();
+    return m_currency.nextDifficulty3(timestamps, commulative_difficulties);
+  }
+  logger(DEBUGGING) << "Using zawy's LWMA-2 difficulty algo (latest) and the timestamp size now is: " << timestamps.size();
   return m_currency.nextDifficulty(timestamps, commulative_difficulties);
 }
 
@@ -911,7 +918,9 @@ difficulty_type Blockchain::get_next_difficulty_for_alternative_chain(const std:
   else if(version == 1){
     return m_currency.nextDifficulty2(timestamps, commulative_difficulties);
   }
-  
+  else if(version == 2){
+    return m_currency.nextDifficulty3(timestamps, commulative_difficulties);
+  }
   return m_currency.nextDifficulty(timestamps, commulative_difficulties);
 }
 

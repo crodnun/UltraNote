@@ -61,8 +61,11 @@ public:
   size_t difficultyBlocksCount2() const {
     return parameters::DIFFICULTY_WINDOW_V1 + m_difficultyCut * 2;
   }
-  size_t difficultyBlocksCount() const {
+  size_t difficultyBlocksCount3() const {
     return parameters::DIFFICULTY_WINDOW_V2 + 1;
+  }
+  size_t difficultyBlocksCount() const {
+    return parameters::DIFFICULTY_WINDOW_V3 + 1;
   }
   
   uint64_t depositMinAmount() const { return m_depositMinAmount; }
@@ -135,6 +138,7 @@ public:
   
   difficulty_type nextDifficulty1(std::vector<uint64_t> timestamps, std::vector<difficulty_type> cumulativeDifficulties) const;
   difficulty_type nextDifficulty2(std::vector<uint64_t> timestamps, std::vector<difficulty_type> cumulativeDifficulties) const;
+  difficulty_type nextDifficulty3(std::vector<uint64_t> timestamps, std::vector<difficulty_type> cumulativeDifficulties) const;
   difficulty_type nextDifficulty(std::vector<uint64_t> timestamps, std::vector<difficulty_type> cumulativeDifficulties) const;
   bool checkProofOfWork(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic, Crypto::Hash& proofOfWork) const;
 
