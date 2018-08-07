@@ -485,8 +485,12 @@ bool get_block_longhash(cn_context &context, const Block& b, Hash& res) {
   if (!get_block_hashing_blob(b, bd)) {
     return false;
   }
-
-  cn_slow_hash(context, bd.data(), bd.size(), res);
+  if (get_block_height(b) <= CryptoNote::parameters::UPGRADE_HEIGHT_V2) {
+//  if (version <= 3) {
+      cn_slow_hash_v6(context, bd.data(), bd.size(), res);
+  } else {
+      cn_lite_slow_hash_v1(context, bd.data(), bd.size(), res);
+  }
   return true;
 }
 
