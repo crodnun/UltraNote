@@ -80,6 +80,17 @@ class InformationMsg : public ColouredMsg
                              Common::Console::Color::BrightYellow) {}
 };
 
+class LogoMsg : public ColouredMsg
+{
+public:
+    explicit LogoMsg(std::string msg)
+    : ColouredMsg(msg, Common::Console::Color::BrightGreen) {}
+    
+    explicit LogoMsg(std::string msg, int padding)
+    : ColouredMsg(msg, padding,
+    Common::Console::Color::BrightGreen) {}
+};
+
 class SuggestionMsg : public ColouredMsg
 {
     public:
