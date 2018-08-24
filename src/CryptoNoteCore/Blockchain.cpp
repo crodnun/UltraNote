@@ -711,18 +711,14 @@ difficulty_type Blockchain::getDifficultyForNextBlock() {
     commulative_difficulties.push_back(m_blocks[offset].cumulative_difficulty);
   }
   if(version == 0){
-    logger(DEBUGGING) << "Using legacy difficulty algo (v1) and the timestamp size now is: " << timestamps.size();
     return m_currency.nextDifficulty1(timestamps, commulative_difficulties);
   }
   else if(version == 1){
-    logger(DEBUGGING) << "Using Sumokoin difficulty algo (v2) and the timestamp size now is: " << timestamps.size();
     return m_currency.nextDifficulty2(timestamps, commulative_difficulties);
   }
   else if(version == 2){
-    logger(DEBUGGING) << "Using zawy's LWMA difficulty algo (v3) and the timestamp size now is: " << timestamps.size();
     return m_currency.nextDifficulty3(timestamps, commulative_difficulties);
   }
-  logger(DEBUGGING) << "Using zawy's LWMA-2 difficulty algo (latest) and the timestamp size now is: " << timestamps.size();
   return m_currency.nextDifficulty(timestamps, commulative_difficulties);
 }
 

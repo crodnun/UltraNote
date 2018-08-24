@@ -739,10 +739,10 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps, std::
     // If N !=60 adjust 3 integers: 67*N/60, 150*60/N, 110*60/N
     next_D = std::max((prev_D*67)/100, std::min( next_D, (prev_D*150)/100));
     if ( sum_3_ST < (8*T)/10) {  next_D = std::max(next_D,(prev_D*110)/100); }
-    
+
     return static_cast<uint64_t>(next_D);
 }
-    
+
 bool Currency::checkProofOfWork(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic, Crypto::Hash& proofOfWork) const {
 
     switch (block.majorVersion) {
@@ -753,42 +753,39 @@ bool Currency::checkProofOfWork(Crypto::cn_context& context, const Block& block,
     case BLOCK_MAJOR_VERSION_3:
         return checkProofOfWorkV2(context, block, currentDiffic, proofOfWork);
     }
-        
+
     logger(ERROR, BRIGHT_RED) << "Unknown block major version: " << block.majorVersion << "." << block.minorVersion;
     return false;
 }
-    
+
 bool Currency::checkProofOfWorkV1(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic,
         Crypto::Hash& proofOfWork) const {
     if (!get_block_longhash(context, block, proofOfWork)) {
         return false;
     }
-    
+
     return check_hash(proofOfWork, currentDiffic);
 }
 
 bool Currency::checkProofOfWorkV2(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic,
         Crypto::Hash& proofOfWork) const {
-        
+
     if (!get_block_longhash(context, block, proofOfWork)) {
         return false;
     }
-        
+
     if (!check_hash(proofOfWork, currentDiffic)) {
         return false;
     }
-        
-        
+
     if (8 * sizeof(m_genesisBlockHash) < block.rootBlock.blockchainBranch.size()) {
         return false;
     }
-        
+
     Crypto::Hash auxBlockHeaderHash;
     if (!get_aux_block_header_hash(block, auxBlockHeaderHash)) {
         return false;
     }
-        
-           
     return true;
 }
 
