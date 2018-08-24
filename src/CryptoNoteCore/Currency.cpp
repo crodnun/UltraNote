@@ -87,7 +87,7 @@ bool Currency::init() {
 
   if (isTestnet()) {
     m_upgradeHeightV2 = 1;
-    m_upgradeHeightV3 = 20;
+    m_upgradeHeightV3 = 199;
     
     m_blocksFileName = "testnet_" + m_blocksFileName;
     m_blocksCacheFileName = "testnet_" + m_blocksCacheFileName;
@@ -778,11 +778,6 @@ bool Currency::checkProofOfWorkV2(Crypto::cn_context& context, const Block& bloc
         return false;
     }
         
-    TransactionExtraMergeMiningTag mmTag;
-    if (!getMergeMiningTagFromExtra(block.rootBlock.baseTransaction.extra, mmTag)) {
-        logger(ERROR) << "merge mining tag wasn't found in extra of the root block miner transaction";
-        return false;
-    }
         
     if (8 * sizeof(m_genesisBlockHash) < block.rootBlock.blockchainBranch.size()) {
         return false;
@@ -793,15 +788,7 @@ bool Currency::checkProofOfWorkV2(Crypto::cn_context& context, const Block& bloc
         return false;
     }
         
-    Crypto::Hash auxBlocksMerkleRoot;
-    Crypto::tree_hash_from_branch(block.rootBlock.blockchainBranch.data(), block.rootBlock.blockchainBranch.size(),
-        auxBlockHeaderHash, &m_genesisBlockHash, auxBlocksMerkleRoot);
-        
-    if (auxBlocksMerkleRoot != mmTag.merkleRoot) {
-        logger(ERROR, BRIGHT_YELLOW) << "Aux block hash wasn't found in merkle tree";
-        return false;
-    }
-        
+           
     return true;
 }
 

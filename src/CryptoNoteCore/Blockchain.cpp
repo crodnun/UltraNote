@@ -752,7 +752,7 @@ difficulty_type Blockchain::difficultyAtHeight(uint64_t height) {
 }
 
 uint8_t Blockchain::get_block_major_version_for_height(uint64_t height) const {
-    if (height > m_upgradeDetectorV3.upgradeHeight()) {
+    if (height >= m_upgradeDetectorV3.upgradeHeight()) {
         return m_upgradeDetectorV3.targetVersion();
     } else if (height > m_upgradeDetectorV2.upgradeHeight()) {
         return m_upgradeDetectorV2.targetVersion();

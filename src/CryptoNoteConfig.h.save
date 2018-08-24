@@ -88,7 +88,7 @@ const size_t   FUSION_TX_MIN_INPUT_COUNT                     = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO              = 4;
 
 const uint32_t UPGRADE_HEIGHT_V2                             = 1;
-const uint32_t UPGRADE_HEIGHT_V3                             = 191999;
+const uint32_t UPGRADE_HEIGHT_V3                             = 200;
 
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
 const size_t   UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
@@ -122,7 +122,6 @@ const uint8_t  TRANSACTION_VERSION_2                         =  2;
 const uint8_t  BLOCK_MAJOR_VERSION_1                         =  1;
 const uint8_t  BLOCK_MAJOR_VERSION_2                         =  2;
 const uint8_t  BLOCK_MAJOR_VERSION_3                         =  3;
-const uint8_t  BLOCK_MAJOR_VERSION_4                         =  4;
 
 const uint8_t  BLOCK_MINOR_VERSION_0                         =  0;
 const uint8_t  BLOCK_MINOR_VERSION_1                         =  1;
@@ -302,15 +301,15 @@ const std::map<const uint32_t, const uint8_t> Version = {
     {34147, 1},
     {115000, 2},
     {170000, 3},
-    {192000, 4},
+    {190000, 4},
 };
 
 // {BlockIndex , Version}
 const std::map<const uint32_t, const uint8_t> TestNetVersion = {
-    {60, 1},
-    {120, 2},
-    {180, 3},
-    {240, 4},
+    {61, 1},
+    {122, 2},
+    {183, 3},
+    {200, 4},
 };
 
 // {BlockIndex , Hash}
