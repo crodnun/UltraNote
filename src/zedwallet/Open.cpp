@@ -535,6 +535,20 @@ void viewWalletMsg()
 
 void connectingMsg()
 {
+    std::cout << std::endl << "\n           \n"
+                           << LogoMsg("   *****    ***            //*         //*   *////////*    \n")
+                           << LogoMsg("  .@@@@@( *@@@@@           @@&        *@@(  .&@@@@@@@@@@@@#\n")
+                           << LogoMsg("  .&@@@@( *@@@@@           @@&        *@@(  .&@@*       #@@(\n")
+                           << LogoMsg("                           @@&        *@@(  .&@@*        @@&\n")
+                           << LogoMsg("   *%%%#   (%%%/   %%%#    @@&        *@@(  .&@@*        @@&\n")
+                           << LogoMsg("  .@@@@@( *@@@@@  %@@@@%   @@&        *@@(  .&@@*        @@&\n")
+                           << LogoMsg("   &@@@@/  @@@@@  #@@@@#   @@&        *@@(  .&@@*        @@&\n")
+                           << LogoMsg("                           @@&        *@@(  .&@@*        @@&\n")
+                           << LogoMsg("           @@@@&  /@@@@/  .&@@*       *@@(  .&@@*        @@&\n")
+                           << LogoMsg("          *@@@@@  %@@@@%   *@@@&(/****/@@(  .&@@*        @@&\n")
+                           << LogoMsg("           @@@@@  (@@@@%     /%@@@@@@@@@@(  .&@@*        @@&\n")
+                           << "\n\n"
+              << std::endl << std::endl;
     std::cout << std::endl << "Making initial contact with "
               << WalletConfig::daemonName
               << "."

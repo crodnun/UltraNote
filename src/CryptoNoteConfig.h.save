@@ -88,7 +88,7 @@ const size_t   FUSION_TX_MIN_INPUT_COUNT                     = 12;
 const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO              = 4;
 
 const uint32_t UPGRADE_HEIGHT_V2                             = 1;
-const uint32_t UPGRADE_HEIGHT_V3                             = 191999;
+const uint32_t UPGRADE_HEIGHT_V3                             = 200;
 
 const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
 const size_t   UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
@@ -122,7 +122,6 @@ const uint8_t  TRANSACTION_VERSION_2                         =  2;
 const uint8_t  BLOCK_MAJOR_VERSION_1                         =  1;
 const uint8_t  BLOCK_MAJOR_VERSION_2                         =  2;
 const uint8_t  BLOCK_MAJOR_VERSION_3                         =  3;
-const uint8_t  BLOCK_MAJOR_VERSION_4                         =  4;
 
 const uint8_t  BLOCK_MINOR_VERSION_0                         =  0;
 const uint8_t  BLOCK_MINOR_VERSION_1                         =  1;
@@ -259,6 +258,8 @@ const std::initializer_list<CheckpointData> CHECKPOINTS = {
  { 165812, "23872ac3ab84257c7cbe80347cd9d71fd70a78dea04ee0b62d8597786d14e85e" },
  { 165883, "694a43e8df42738ff8d1e5191e0001534fee848118241b2af271bfcf3f61f18e" },
  { 165988, "411835b7e187878a5ea0f8e8d774bc2ca0d6490579427e38b40192409ce86176" },
+ { 166202, "40bac34e6395135e511ea0fdd6da38cc88daaefb20499790647a6dde3f5eea24" },
+ { 166238, "7cd85ecf6c2d43e96c6c928c4ca36c45a8a87f1f8642e13855b8bc8e7bd58773" },
  { 166337, "ae5672b37bdccedfe1bc156bfeee5e215f855ce0c6b8d38e83ab47a2389f961a" },
  { 166409, "8a942d9093b6ee4a53eb850b0d479b6cd3fdac61fcc7e7cd9d539766f22bc28a" },
  { 166453, "0bd7f7001463e717cab5cbcc8cfc9571df4bcc1cde266399c2acf173183ed7b1" },
@@ -300,15 +301,15 @@ const std::map<const uint32_t, const uint8_t> Version = {
     {34147, 1},
     {115000, 2},
     {170000, 3},
-    {192000, 4},
+    {190000, 4},
 };
 
 // {BlockIndex , Version}
 const std::map<const uint32_t, const uint8_t> TestNetVersion = {
-    {60, 1},
-    {120, 2},
-    {180, 3},
-    {240, 4},
+    {61, 1},
+    {122, 2},
+    {183, 3},
+    {200, 4},
 };
 
 // {BlockIndex , Hash}

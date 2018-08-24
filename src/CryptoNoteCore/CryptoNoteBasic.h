@@ -16,4 +16,21 @@ namespace CryptoNote {
   const Crypto::SecretKey NULL_SECRET_KEY = boost::value_initialized<Crypto::SecretKey>();
 
   KeyPair generateKeyPair();
+    
+  struct RootBlockSerializer {
+    RootBlockSerializer(RootBlock& rootBlock, uint64_t& timestamp, uint32_t& nonce, bool hashingSerialization, bool headerOnly) :
+    m_rootBlock(rootBlock), m_timestamp(timestamp), m_nonce(nonce), m_hashingSerialization(hashingSerialization), m_headerOnly(headerOnly) {
+        }
+        
+    RootBlock& m_rootBlock;
+    uint64_t& m_timestamp;
+    uint32_t& m_nonce;
+    bool m_hashingSerialization;
+    bool m_headerOnly;
+  };
+    
+  inline RootBlockSerializer makeRootBlockSerializer(const Block& b, bool hashingSerialization, bool headerOnly) {
+    Block& blockRef = const_cast<Block&>(b);
+    return RootBlockSerializer(blockRef.rootBlock, blockRef.timestamp, blockRef.nonce, hashingSerialization, headerOnly);
+  }
 }

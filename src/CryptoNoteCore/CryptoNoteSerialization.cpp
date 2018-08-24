@@ -298,7 +298,7 @@ void serialize(MultisignatureOutput& multisignature, ISerializer& serializer) {
 
 void serializeBlockHeader(BlockHeader& header, ISerializer& serializer) {
   serializer(header.majorVersion, "major_version");
-  if (header.majorVersion > BLOCK_MAJOR_VERSION_2) {
+  if (header.majorVersion > BLOCK_MAJOR_VERSION_3) {
     throw std::runtime_error("Wrong major version");
   }
 
@@ -330,28 +330,6 @@ void serialize(AccountKeys& keys, ISerializer& s) {
   s(keys.viewSecretKey, "m_view_secret_key");
 }
 
-void doSerialize(TransactionExtraMergeMiningTag& tag, ISerializer& serializer) {
-  uint64_t depth = static_cast<uint64_t>(tag.depth);
-  serializer(depth, "depth");
-  tag.depth = static_cast<size_t>(depth);
-  serializer(tag.merkleRoot, "merkle_root");
-}
-
-void serialize(TransactionExtraMergeMiningTag& tag, ISerializer& serializer) {
-  if (serializer.type() == ISerializer::OUTPUT) {
-    std::string field;
-    StringOutputStream os(field);
-    BinaryOutputStreamSerializer output(os);
-    doSerialize(tag, output);
-    serializer(field, "");
-  } else {
-    std::string field;
-    serializer(field, "");
-    MemoryInputStream stream(field.data(), field.size());
-    BinaryInputStreamSerializer input(stream);
-    doSerialize(tag, input);
-  }
-}
 
 void serialize(KeyPair& keyPair, ISerializer& serializer) {
   serializer(keyPair.secretKey, "secret_key");

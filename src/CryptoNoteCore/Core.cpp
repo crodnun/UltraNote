@@ -332,6 +332,11 @@ bool core::get_block_template(Block& b, const AccountPublicAddress& adr, difficu
       b.minorVersion = BLOCK_MINOR_VERSION_1;
     } else if (BLOCK_MAJOR_VERSION_2 == b.majorVersion) {
       b.minorVersion = BLOCK_MINOR_VERSION_0;
+    } else if (BLOCK_MAJOR_VERSION_3 == b.majorVersion) {
+        b.minorVersion = BLOCK_MINOR_VERSION_0;
+        b.rootBlock.majorVersion = BLOCK_MAJOR_VERSION_3;
+        b.rootBlock.minorVersion = BLOCK_MINOR_VERSION_0;
+        //b.rootBlock.getTransactionCount = 1;
     }
 
     b.previousBlockHash = get_tail_id();

@@ -86,7 +86,9 @@ bool Currency::init() {
   }
 
   if (isTestnet()) {
-    m_upgradeHeight = 0;
+    m_upgradeHeightV2 = 1;
+    m_upgradeHeightV3 = 199;
+    
     m_blocksFileName = "testnet_" + m_blocksFileName;
     m_blocksCacheFileName = "testnet_" + m_blocksCacheFileName;
     m_blockIndexesFileName = "testnet_" + m_blockIndexesFileName;
@@ -136,6 +138,16 @@ uint64_t Currency::baseRewardFunction(uint64_t alreadyGeneratedCoins, uint32_t h
   base_reward = (std::min)(base_reward, m_moneySupply - alreadyGeneratedCoins);
   
   return base_reward;
+}
+
+uint32_t Currency::upgradeHeight(uint8_t majorVersion) const {
+    if (majorVersion == BLOCK_MAJOR_VERSION_2) {
+        return m_upgradeHeightV2;
+    } else if (majorVersion == BLOCK_MAJOR_VERSION_3) {
+        return m_upgradeHeightV3;
+    } else {
+        return static_cast<uint32_t>(-1);
+    }
 }
 
 bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64_t alreadyGeneratedCoins,
@@ -625,7 +637,7 @@ difficulty_type Currency::nextDifficulty2(std::vector<uint64_t> timestamps,
   return nextDiff;
  }
 
-//@nesterow: Third@ diff algo, zawy's LWMA
+//@nesterow: Third diff algo, zawy's LWMA
 
 // LWMA difficulty algorithm
 // Copyright (c) 2017-2018 Zawy
@@ -716,7 +728,7 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps, std::
   //  }
     
     for ( int64_t i = 1; i <= N; i++) {
-        ST = std::max(-FTL, std::min( static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i - 1]), 6*T));
+        ST = std::max(-6*T, std::min( static_cast<int64_t>(timestamps[i]) - static_cast<int64_t>(timestamps[i - 1]), 6*T));
         L +=  ST * i ;
         if ( i > N-3 ) { sum_3_ST += ST; }
     }
@@ -727,18 +739,54 @@ difficulty_type Currency::nextDifficulty(std::vector<uint64_t> timestamps, std::
     // If N !=60 adjust 3 integers: 67*N/60, 150*60/N, 110*60/N
     next_D = std::max((prev_D*67)/100, std::min( next_D, (prev_D*150)/100));
     if ( sum_3_ST < (8*T)/10) {  next_D = std::max(next_D,(prev_D*110)/100); }
-    
+
     return static_cast<uint64_t>(next_D);
 }
 
-bool Currency::checkProofOfWork(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic,
-  Crypto::Hash& proofOfWork) const {
+bool Currency::checkProofOfWork(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic, Crypto::Hash& proofOfWork) const {
 
-  if (!get_block_longhash(context, block, proofOfWork)) {
+    switch (block.majorVersion) {
+    case BLOCK_MAJOR_VERSION_1:
+    case BLOCK_MAJOR_VERSION_2:
+        return checkProofOfWorkV1(context, block, currentDiffic, proofOfWork);
+
+    case BLOCK_MAJOR_VERSION_3:
+        return checkProofOfWorkV2(context, block, currentDiffic, proofOfWork);
+    }
+
+    logger(ERROR, BRIGHT_RED) << "Unknown block major version: " << block.majorVersion << "." << block.minorVersion;
     return false;
-  }
+}
 
-  return check_hash(proofOfWork, currentDiffic);
+bool Currency::checkProofOfWorkV1(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic,
+        Crypto::Hash& proofOfWork) const {
+    if (!get_block_longhash(context, block, proofOfWork)) {
+        return false;
+    }
+
+    return check_hash(proofOfWork, currentDiffic);
+}
+
+bool Currency::checkProofOfWorkV2(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic,
+        Crypto::Hash& proofOfWork) const {
+
+    if (!get_block_longhash(context, block, proofOfWork)) {
+        return false;
+    }
+
+    if (!check_hash(proofOfWork, currentDiffic)) {
+        return false;
+    }
+
+    if (8 * sizeof(m_genesisBlockHash) < block.rootBlock.blockchainBranch.size()) {
+        return false;
+    }
+
+    Crypto::Hash auxBlockHeaderHash;
+    if (!get_aux_block_header_hash(block, auxBlockHeaderHash)) {
+        return false;
+    }
+    return true;
 }
 
 size_t Currency::getApproximateMaximumInputCount(size_t transactionSize, size_t outputCount, size_t mixinCount) const {
@@ -809,7 +857,8 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {
   mempoolTxFromAltBlockLiveTime(parameters::CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME);
   numberOfPeriodsToForgetTxDeletedFromPool(parameters::CRYPTONOTE_NUMBER_OF_PERIODS_TO_FORGET_TX_DELETED_FROM_POOL);
 
-  upgradeHeight(parameters::UPGRADE_HEIGHT);
+  upgradeHeightV2(parameters::UPGRADE_HEIGHT_V2);
+  upgradeHeightV3(parameters::UPGRADE_HEIGHT_V3);
   upgradeVotingThreshold(parameters::UPGRADE_VOTING_THRESHOLD);
   upgradeVotingWindow(parameters::UPGRADE_VOTING_WINDOW);
   upgradeWindow(parameters::UPGRADE_WINDOW);

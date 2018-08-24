@@ -313,14 +313,14 @@ m_tx_pool(tx_pool),
 m_current_block_cumul_sz_limit(0),
 m_is_in_checkpoint_zone(false),
 m_checkpoints(logger),
-m_upgradeDetector(currency, m_blocks, BLOCK_MAJOR_VERSION_2, logger) {
+m_upgradeDetectorV2(currency, m_blocks, BLOCK_MAJOR_VERSION_2, logger),
+m_upgradeDetectorV3(currency, m_blocks, BLOCK_MAJOR_VERSION_3, logger) {
 
   m_outputs.set_deleted_key(0);
   m_multisignatureOutputs.set_deleted_key(0);
   Crypto::KeyImage nullImage = boost::value_initialized<decltype(nullImage)>();
   m_spent_keys.set_deleted_key(nullImage);
 }
-
 
 bool Blockchain::addObserver(IBlockchainStorageObserver* observer) {
   return m_observerManager.add(observer);
@@ -452,7 +452,7 @@ bool Blockchain::init(const std::string& config_folder, bool load_existing) {
     }
   }
 
-  if (!m_upgradeDetector.init()) {
+  if (!m_upgradeDetectorV2.init() || !m_upgradeDetectorV3.init()) {
     logger(ERROR, BRIGHT_RED) << "Failed to initialize upgrade detector";
     return false;
   }
@@ -696,7 +696,7 @@ difficulty_type Blockchain::getDifficultyForNextBlock() {
   else if(version == 2){
     difficiltyBlocksCount = static_cast<uint64_t>(m_currency.difficultyBlocksCount3());
   }
-  else if(version == 3){
+  else if(version == 3 || version == 4){
     difficiltyBlocksCount = static_cast<uint64_t>(m_currency.difficultyBlocksCount());
   }
 
@@ -711,18 +711,14 @@ difficulty_type Blockchain::getDifficultyForNextBlock() {
     commulative_difficulties.push_back(m_blocks[offset].cumulative_difficulty);
   }
   if(version == 0){
-    logger(DEBUGGING) << "Using legacy difficulty algo (v1) and the timestamp size now is: " << timestamps.size();
     return m_currency.nextDifficulty1(timestamps, commulative_difficulties);
   }
   else if(version == 1){
-    logger(DEBUGGING) << "Using Sumokoin  difficulty algo (v2) and the timestamp size now is: " << timestamps.size();
     return m_currency.nextDifficulty2(timestamps, commulative_difficulties);
   }
   else if(version == 2){
-    logger(DEBUGGING) << "Using zawy's LWMA difficulty algo (v3) and the timestamp size now is: " << timestamps.size();
     return m_currency.nextDifficulty3(timestamps, commulative_difficulties);
   }
-  logger(DEBUGGING) << "Using zawy's LWMA-2 difficulty algo (latest) and the timestamp size now is: " << timestamps.size();
   return m_currency.nextDifficulty(timestamps, commulative_difficulties);
 }
 
@@ -752,7 +748,13 @@ difficulty_type Blockchain::difficultyAtHeight(uint64_t height) {
 }
 
 uint8_t Blockchain::get_block_major_version_for_height(uint64_t height) const {
-  return height > m_upgradeDetector.upgradeHeight() ? m_upgradeDetector.targetVersion() : BLOCK_MAJOR_VERSION_1;
+    if (height >= m_upgradeDetectorV3.upgradeHeight()) {
+        return m_upgradeDetectorV3.targetVersion();
+    } else if (height > m_upgradeDetectorV2.upgradeHeight()) {
+        return m_upgradeDetectorV2.targetVersion();
+    } else {
+        return BLOCK_MAJOR_VERSION_1;
+    }
 }
 
 bool Blockchain::rollback_blockchain_switching(std::list<Block> &original_chain, size_t rollback_height) {
@@ -1677,7 +1679,7 @@ bool Blockchain::check_tx_outputs(const Transaction& tx) const {
 
 bool Blockchain::check_block_timestamp_main(const Block& b) {
   uint64_t ftl = m_currency.blockFutureTimeLimit();
-  if(getForkVersion() == 2)
+  if(getForkVersion() == 2 || getForkVersion() == 3 || getForkVersion() == 4)
     ftl = m_currency.blockFutureTimeLimit_v2();
   
   if (b.timestamp > get_adjusted_time() + ftl) {
@@ -1994,7 +1996,8 @@ bool Blockchain::pushBlock(const Block& blockData, const std::vector<Transaction
 
   bvc.m_added_to_main_chain = true;
 
-  m_upgradeDetector.blockPushed();
+  m_upgradeDetectorV2.blockPushed();
+  m_upgradeDetectorV3.blockPushed();
   update_next_comulative_size_limit();
 
   return true;
@@ -2083,7 +2086,8 @@ void Blockchain::popBlock(const Crypto::Hash& blockHash) {
 
   assert(m_blockIndex.size() == m_blocks.size());
 
-  m_upgradeDetector.blockPopped();
+  m_upgradeDetectorV2.blockPopped();
+  m_upgradeDetectorV3.blockPopped();
 }
 
 bool Blockchain::pushTransaction(BlockEntry& block, const Crypto::Hash& transactionHash, TransactionIndex transactionIndex) {
@@ -2328,7 +2332,7 @@ bool Blockchain::getLowerBound(uint64_t timestamp, uint64_t startOffset, uint32_
   assert(startOffset < m_blocks.size());
   
   uint64_t ftl = m_currency.blockFutureTimeLimit();
-  if(getForkVersion() == 2)
+  if(getForkVersion() == 2 || getForkVersion() == 3 || getForkVersion() == 4)
     ftl = m_currency.blockFutureTimeLimit_v2();
   
   auto bound = std::lower_bound(m_blocks.begin() + startOffset, m_blocks.end(), timestamp - ftl,

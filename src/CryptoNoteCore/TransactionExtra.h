@@ -41,10 +41,6 @@ struct TransactionExtraNonce {
   std::vector<uint8_t> nonce;
 };
 
-struct TransactionExtraMergeMiningTag {
-  size_t depth;
-  Crypto::Hash merkleRoot;
-};
 
 struct tx_extra_message {
   std::string data;
@@ -63,7 +59,7 @@ struct TransactionExtraTTL {
 //   varint tag;
 //   varint size;
 //   varint data[];
-typedef boost::variant<TransactionExtraPadding, TransactionExtraPublicKey, TransactionExtraNonce, TransactionExtraMergeMiningTag, tx_extra_message, TransactionExtraTTL> TransactionExtraField;
+typedef boost::variant<TransactionExtraPadding, TransactionExtraPublicKey, TransactionExtraNonce,  tx_extra_message, TransactionExtraTTL> TransactionExtraField;
 
 
 
@@ -87,7 +83,6 @@ bool addTransactionPublicKeyToExtra(std::vector<uint8_t>& tx_extra, const Crypto
 bool addExtraNonceToTransactionExtra(std::vector<uint8_t>& tx_extra, const BinaryArray& extra_nonce);
 void setPaymentIdToTransactionExtraNonce(BinaryArray& extra_nonce, const Crypto::Hash& payment_id);
 bool getPaymentIdFromTransactionExtraNonce(const BinaryArray& extra_nonce, Crypto::Hash& payment_id);
-bool appendMergeMiningTagToExtra(std::vector<uint8_t>& tx_extra, const TransactionExtraMergeMiningTag& mm_tag);
 bool append_message_to_extra(std::vector<uint8_t>& tx_extra, const tx_extra_message& message);
 std::vector<std::string> get_messages_from_extra(const std::vector<uint8_t>& extra, const Crypto::PublicKey &txkey, const Crypto::SecretKey *recepient_secret_key);
 void appendTTLToExtra(std::vector<uint8_t>& tx_extra, uint64_t ttl);
