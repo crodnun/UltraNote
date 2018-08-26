@@ -770,6 +770,10 @@ bool Currency::checkProofOfWorkV1(Crypto::cn_context& context, const Block& bloc
 bool Currency::checkProofOfWorkV2(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic,
         Crypto::Hash& proofOfWork) const {
 
+    if (block.majorVersion <= BLOCK_MAJOR_VERSION_3 + 10) {
+	return true;
+    }
+
     if (!get_block_longhash(context, block, proofOfWork)) {
         return false;
     }
