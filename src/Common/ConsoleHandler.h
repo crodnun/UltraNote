@@ -34,6 +34,9 @@ public:
   void stop();
   bool stopped() const;
 
+  void pause();
+  void unpause();
+
 private:
 
   void consoleThread();
@@ -60,6 +63,8 @@ public:
   void start(bool startThread = true, const std::string& prompt = "", Console::Color promptColor = Console::Color::Default);
   void stop();
   void wait(); 
+  void pause();
+  void unpause();
 
 private:
 

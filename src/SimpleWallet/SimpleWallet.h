@@ -82,6 +82,7 @@ namespace CryptoNote
     bool save(const std::vector<std::string> &args);
     bool reset(const std::vector<std::string> &args);
     bool set_log(const std::vector<std::string> &args);
+    bool change_password(const std::vector<std::string> &args);
 
     bool ask_wallet_create_if_needed();
     std::string resolveAlias(const std::string& aliasUrl);
@@ -160,6 +161,7 @@ namespace CryptoNote
     Logging::LoggerManager& logManager;
     System::Dispatcher& m_dispatcher;
     Logging::LoggerRef logger;
+    Tools::PasswordContainer pwd_container;
 
     std::unique_ptr<CryptoNote::NodeRpcProxy> m_node;
     std::unique_ptr<CryptoNote::IWalletLegacy> m_wallet;
