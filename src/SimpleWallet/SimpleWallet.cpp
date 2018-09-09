@@ -588,6 +588,7 @@ simple_wallet::simple_wallet(System::Dispatcher& dispatcher, const CryptoNote::C
   m_consoleHandler.setHandler("address", boost::bind(&simple_wallet::print_address, this, _1), "Show current wallet public address");
   m_consoleHandler.setHandler("save", boost::bind(&simple_wallet::save, this, _1), "Save wallet synchronized data");
   m_consoleHandler.setHandler("reset", boost::bind(&simple_wallet::reset, this, _1), "Discard cache data and start synchronizing from the start");
+  m_consoleHandler.setHandler("password", boost::bind(&simple_wallet::change_password, this, _1), "Change password");
   m_consoleHandler.setHandler("help", boost::bind(&simple_wallet::help, this, _1), "Show this help");
   m_consoleHandler.setHandler("exit", boost::bind(&simple_wallet::exit, this, _1), "Close wallet");
 }
@@ -639,13 +640,31 @@ bool simple_wallet::init(const boost::program_options::variables_map& vm) {
       return false;
     }
 
-    std::cout << "Specify wallet file name (e.g., wallet.bin).\n";
+    std::cout << "Specify wallet file name (e.g., wallet.wallet).\n";
     std::string userInput;
+    bool validInput = true;
     do {
       std::cout << "Wallet file name: ";
       std::getline(std::cin, userInput);
       boost::algorithm::trim(userInput);
-    } while (userInput.empty());
+
+      if (c != 'o') {
+        std::string ignoredString;
+        std::string walletFileName;
+                 
+        WalletHelper::prepareFileNames(userInput, ignoredString, walletFileName);
+        boost::system::error_code ignore;
+        if (boost::filesystem::exists(walletFileName, ignore))
+         {
+           std::cout << walletFileName << " already exists! Try a different name." << std::endl;
+           validInput = false;
+         }
+         else
+         {
+           validInput = true;
+         }
+     }         
+    } while (!validInput);
 
     if (c == 'g' || c == 'G') {
       m_generate_new = userInput;
@@ -684,10 +703,9 @@ bool simple_wallet::init(const boost::program_options::variables_map& vm) {
     m_daemon_address = std::string("http://") + m_daemon_host + ":" + std::to_string(m_daemon_port);
   }
 
-  Tools::PasswordContainer pwd_container;
   if (command_line::has_arg(vm, arg_password)) {
     pwd_container.password(command_line::get_arg(vm, arg_password));
-  } else if (!pwd_container.read_password()) {
+  } else if (!pwd_container.read_password(!m_generate_new.empty())) {
     fail_msg_writer() << "failed to read wallet password";
     return false;
   }
@@ -859,6 +877,32 @@ bool simple_wallet::reset(const std::vector<std::string> &args) {
   return true;
 }
 
+bool simple_wallet::change_password(const std::vector<std::string>& args) {
+   std::cout << "Old ";
+   m_consoleHandler.pause();
+   if (!pwd_container.read_and_validate()) {
+     std::cout << "Incorrect password!" << std::endl;
+     m_consoleHandler.unpause();
+     return false;
+   }
+   const auto oldpwd = pwd_container.password();
+
+   std::cout << "New ";
+   pwd_container.read_password(true);
+   const auto newpwd = pwd_container.password();
+   m_consoleHandler.unpause();
+
+   try
+     {
+         m_wallet->changePassword(oldpwd, newpwd);
+     }
+     catch (const std::exception& e) {
+         fail_msg_writer() << "Could not change password: " << e.what();
+         return false;
+     }
+     success_msg_writer(true) << "Password changed.";
+     return true;
+}
 bool simple_wallet::start_mining(const std::vector<std::string>& args) {
   COMMAND_RPC_START_MINING::request req;
   req.miner_address = m_wallet->getAddress();
