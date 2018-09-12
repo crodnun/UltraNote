@@ -66,6 +66,8 @@ namespace CryptoNote
 
     bool new_wallet(const std::string &wallet_file, const std::string& password);
     bool new_wallet(Crypto::SecretKey &secret_key, Crypto::SecretKey &view_key, const std::string &wallet_file, const std::string& password);
+    bool new_wallet(AccountKeys &private_key, const std::string &wallet_file, const std::string& password);
+    bool new_tracking_wallet(AccountKeys &tracking_key, const std::string &wallet_file, const std::string& password);
     bool open_wallet(const std::string &wallet_file, const std::string& password);
     bool close_wallet();
 
@@ -75,6 +77,7 @@ namespace CryptoNote
     bool stop_mining(const std::vector<std::string> &args);
     bool show_balance(const std::vector<std::string> &args = std::vector<std::string>());
     bool export_keys(const std::vector<std::string> &args = std::vector<std::string>());
+    bool export_tracking_key(const std::vector<std::string> &args = std::vector<std::string>());
     bool show_incoming_transfers(const std::vector<std::string> &args);
     bool show_payments(const std::vector<std::string> &args);
     bool show_blockchain_height(const std::vector<std::string> &args);
@@ -149,6 +152,8 @@ namespace CryptoNote
     std::string m_wallet_file_arg;
     std::string m_generate_new;
     std::string m_import_new;
+    std::string m_restore_new;
+    std::string m_track_new;
     std::string m_import_path;
 
     std::string m_daemon_address;
@@ -171,6 +176,7 @@ namespace CryptoNote
     refresh_progress_reporter_t m_refresh_progress_reporter;
 
     bool m_walletSynchronized;
+    bool m_trackingWallet;
     std::mutex m_walletSynchronizedMutex;
     std::condition_variable m_walletSynchronizedCV;
   };
