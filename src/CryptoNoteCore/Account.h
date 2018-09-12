@@ -21,6 +21,7 @@ namespace CryptoNote {
   public:
     AccountBase();
     void generate();
+    void generateDeterministic();
     static void generateViewFromSpend(Crypto::SecretKey&, Crypto::SecretKey&, Crypto::PublicKey&);
     static void generateViewFromSpend(Crypto::SecretKey&, Crypto::SecretKey&);
 

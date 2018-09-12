@@ -7,6 +7,7 @@
 
 #include "Account.h"
 #include "CryptoNoteSerialization.h"
+#include "Crypto/crypto.h"
 #include "crypto/keccak.c"
 
 namespace CryptoNote {
@@ -43,6 +44,14 @@ void AccountBase::generateViewFromSpend(Crypto::SecretKey &spend, Crypto::Secret
   /* If we don't need the pub key */
   Crypto::PublicKey unused_dummy_variable;
   generateViewFromSpend(spend, viewSecret, unused_dummy_variable);
+}
+//-----------------------------------------------------------------
+void AccountBase::generateDeterministic() { 
+  Crypto::SecretKey second;
+  Crypto::generate_keys(m_keys.address.spendPublicKey, m_keys.spendSecretKey);
+  keccak((uint8_t *)&m_keys.spendSecretKey, sizeof(Crypto::SecretKey), (uint8_t *)&second, sizeof(Crypto::SecretKey));
+  Crypto::generate_deterministic_keys(m_keys.address.viewPublicKey, m_keys.viewSecretKey, second);
+  m_creation_timestamp = time(NULL);
 }
 //-----------------------------------------------------------------
 const AccountKeys &AccountBase::getAccountKeys() const {

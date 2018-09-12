@@ -4,11 +4,11 @@ Added in 1.0.8:
 - Private keys
 - Change password option
 - Remote daemon option
+- Determistic wallets
 
 To add:
 
 - Mnemonic seeds
-- Determistic wallets
 - Ability to ignore peers that aren't running a supported version
 - Fix 191997 bug
 - Diff overhead fix

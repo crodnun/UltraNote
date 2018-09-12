@@ -164,6 +164,23 @@ void WalletLegacy::initAndGenerate(const std::string& password) {
   m_observerManager.notify(&IWalletLegacyObserver::initCompleted, std::error_code());
 }
 
+void WalletLegacy::initAndGenerateDeterministic(const std::string& password) {
+     {
+        std::unique_lock<std::mutex> stateLock(m_cacheMutex);
+
+        if (m_state != NOT_INITIALIZED) {
+            throw std::system_error(make_error_code(error::ALREADY_INITIALIZED));
+        }
+
+        m_account.generateDeterministic();
+        m_password = password;
+
+        initSync();
+    }
+
+    m_observerManager.notify(&IWalletLegacyObserver::initCompleted, std::error_code());
+}
+
 void WalletLegacy::initWithKeys(const AccountKeys& accountKeys, const std::string& password) {
   {
     std::unique_lock<std::mutex> stateLock(m_cacheMutex);

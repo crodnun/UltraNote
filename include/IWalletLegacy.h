@@ -108,6 +108,7 @@ public:
   virtual void removeObserver(IWalletLegacyObserver* observer) = 0;
 
   virtual void initAndGenerate(const std::string& password) = 0;
+  virtual void initAndGenerateDeterministic(const std::string& password) = 0;
   virtual void initAndLoad(std::istream& source, const std::string& password) = 0;
   virtual void initWithKeys(const AccountKeys& accountKeys, const std::string& password) = 0;
   virtual void shutdown() = 0;
