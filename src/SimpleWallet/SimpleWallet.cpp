@@ -650,13 +650,13 @@ bool simple_wallet::init(const boost::program_options::variables_map& vm) {
   }
 
   if (m_generate_new.empty() && m_wallet_file_arg.empty()) {
-    std::cout << "Nor 'generate-new-wallet' neither 'wallet-file' argument was specified.\nWhat do you want to do?\n[O]pen existing wallet\n[G]enerate new wallet file\n[I]mport wallet from keys\n[T]racking wallet\n[E]xit.\n";
+    std::cout << "Nor 'generate-new-wallet' neither 'wallet-file' argument was specified.\nWhat do you want to do?\n[O]pen existing wallet\n[G]enerate new wallet file\n[I]mport wallet from keys\n[T]racking wallet\n[M]nemonic seed recover wallet\n[E]xit.\n";
     char c;
     do {
       std::string answer;
       std::getline(std::cin, answer);
       c = answer[0];
-      if (!(c == 'O' || c == 'G' || c == 'E' || c == 'I' || c == 'R' || c == 'T' || c == 'o' || c == 'r' || c == 'g' || c == 'e' || c == 'i' || c == 't')) {
+      if (!(c == 'O' || c == 'G' || c == 'E' || c == 'I' || c == 'R' || c == 'T' || c == 'M' || c == 'o' || c == 'r' || c == 'g' || c == 'e' || c == 'i' || c == 't' || c == 'M')) {
         std::cout << "Unknown command: " << c <<std::endl;
       } else {
         break;
@@ -695,8 +695,11 @@ bool simple_wallet::init(const boost::program_options::variables_map& vm) {
 
     if (c == 'i' || c == 'I') {
       m_import_new = userInput;
+    } else if (c == 'M' || c == 'm') { 
+      m_restore_deterministic_wallet = true;
+      m_wallet_file_arg = userInput;
     } else if (c == 'r' || c == 'R') {
-         m_restore_new = userInput;
+      m_restore_new = userInput;
      } else if (c == 'g' || c == 'G') {
       m_generate_new = userInput;
     } else if (c == 't' || c == 'T') {
@@ -1008,8 +1011,8 @@ void simple_wallet::handle_command_line(const boost::program_options::variables_
   m_daemon_host = command_line::get_arg(vm, arg_daemon_host);
   m_daemon_port = command_line::get_arg(vm, arg_daemon_port);
   m_restore_deterministic_wallet = command_line::get_arg(vm, arg_restore_deterministic_wallet);
-   m_non_deterministic = command_line::get_arg(vm, arg_non_deterministic);
-   m_mnemonic_seed = command_line::get_arg(vm, arg_mnemonic_seed);
+  m_non_deterministic = command_line::get_arg(vm, arg_non_deterministic);
+  m_mnemonic_seed = command_line::get_arg(vm, arg_mnemonic_seed);
  }
  //----------------------------------------------------------------------------------------------------
  bool simple_wallet::gen_wallet(const std::string &wallet_file, const std::string& password, const Crypto::SecretKey& recovery_key, bool recover, bool two_random) {
