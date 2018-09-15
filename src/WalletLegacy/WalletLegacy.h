@@ -47,10 +47,13 @@ public:
   virtual void removeObserver(IWalletLegacyObserver* observer) override;
 
   virtual void initAndGenerate(const std::string& password) override;
+  virtual void initAndGenerateDeterministic(const std::string& password) override;
   virtual void initAndLoad(std::istream& source, const std::string& password) override;
   virtual void initWithKeys(const AccountKeys& accountKeys, const std::string& password) override;
   virtual void shutdown() override;
   virtual void reset() override;
+
+  Crypto::SecretKey generateKey(const std::string& password, const Crypto::SecretKey& recovery_param = Crypto::SecretKey(), bool recover = false, bool two_random = false);
 
   virtual void save(std::ostream& destination, bool saveDetailed = true, bool saveCache = true) override;
 
@@ -93,7 +96,8 @@ public:
   virtual std::error_code cancelTransaction(size_t transactionId) override;
 
   virtual void getAccountKeys(AccountKeys& keys) override;
-
+  bool getSeed(std::string& electrum_words);
+  
 private:
 
   // IBlockchainSynchronizerObserver
