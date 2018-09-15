@@ -154,9 +154,6 @@ const std::initializer_list<const char*> SEED_NODES = {
    "seed2.ultranote.org:30000",
    "seed3.ultranote.org:30000",
    "seed4.ultranote.org:30000",
-   "seed5.ultranote.org:30000",
-   "seed6.ultranote.org:30000",
-   "seed7.ultranote.org:30000",
    "seed8.ultranote.org:30000",
 };
 
