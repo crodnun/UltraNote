@@ -5,11 +5,12 @@ Added in 1.0.8:
 - Change password option
 - Remote daemon option
 - Determistic wallets
+- Mnemonic seeds
 
 To add:
 
-- Mnemonic seeds
 - Ability to ignore peers that aren't running a supported version
 - Fix 191997 bug
 - Diff overhead fix
 - Payment gate enhancement
+- Multi sign
