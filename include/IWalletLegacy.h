@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "CryptoNote.h"
+#include "CryptoTypes.h"
 
 namespace CryptoNote {
 
@@ -109,6 +110,7 @@ public:
 
   virtual void initAndGenerate(const std::string& password) = 0;
   virtual void initAndGenerateDeterministic(const std::string& password) = 0;
+  virtual Crypto::SecretKey generateKey(const std::string& password, const Crypto::SecretKey& recovery_param = Crypto::SecretKey(), bool recover = false, bool two_random = false) = 0;
   virtual void initAndLoad(std::istream& source, const std::string& password) = 0;
   virtual void initWithKeys(const AccountKeys& accountKeys, const std::string& password) = 0;
   virtual void shutdown() = 0;
@@ -143,6 +145,7 @@ public:
   virtual std::error_code cancelTransaction(size_t transferId) = 0;
 
   virtual void getAccountKeys(AccountKeys& keys) = 0;
+  virtual bool getSeed(std::string& electrum_words) = 0;
 };
 
 }

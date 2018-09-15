@@ -22,6 +22,8 @@ namespace CryptoNote {
     AccountBase();
     void generate();
     void generateDeterministic();
+    Crypto::SecretKey generate_key(const Crypto::SecretKey& recovery_key = Crypto::SecretKey(), bool recover = false, bool two_random = false);
+    
     static void generateViewFromSpend(Crypto::SecretKey&, Crypto::SecretKey&, Crypto::PublicKey&);
     static void generateViewFromSpend(Crypto::SecretKey&, Crypto::SecretKey&);
 
