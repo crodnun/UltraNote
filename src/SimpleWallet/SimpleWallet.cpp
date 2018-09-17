@@ -650,7 +650,7 @@ bool simple_wallet::init(const boost::program_options::variables_map& vm) {
   }
 
   if (m_generate_new.empty() && m_wallet_file_arg.empty()) {
-    std::cout << "Nor 'generate-new-wallet' neither 'wallet-file' argument was specified.\nWhat do you want to do?\n[O]pen existing wallet\n[G]enerate new wallet file\n[I]mport wallet from keys\n[T]racking wallet\n[M]nemonic seed recover wallet\n[E]xit.\n";
+    std::cout << "Nor 'generate-new-wallet' neither 'wallet-file' argument was specified.\nWhat do you want to do?\n[O]pen existing wallet\n[G]enerate new wallet file\n[R]estore from GUI private key\n[I]mport wallet from keys\n[T]racking wallet\n[M]nemonic seed recover wallet\n[E]xit.\n";
     char c;
     do {
       std::string answer;
