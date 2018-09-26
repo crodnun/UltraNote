@@ -136,6 +136,7 @@ bool RpcServer::processJsonRpcRequest(const HttpRequest& request, HttpResponse& 
       { "f_block_json", { makeMemberMethod(&RpcServer::f_on_block_json), false } },
       { "f_transaction_json", { makeMemberMethod(&RpcServer::f_on_transaction_json), false } },
       { "f_on_transactions_pool_json", { makeMemberMethod(&RpcServer::f_on_transactions_pool_json), false } },
+      { "k_transactions_by_payment_id", { makeMemberMethod(&RpcServer::k_on_transactions_by_payment_id), false } },
      // { "f_get_blockchain_settings", { makeMemberMethod(&RpcServer::f_on_get_blockchain_settings), true } },
       { "getblockcount", { makeMemberMethod(&RpcServer::on_getblockcount), true } },
       { "on_getblockhash", { makeMemberMethod(&RpcServer::on_getblockhash), false } },
@@ -734,6 +735,44 @@ bool RpcServer::f_getMixin(const Transaction& transaction, uint64_t& mixin) {
     }
   }
   return true;
+}
+
+bool RpcServer::k_on_transactions_by_payment_id(const K_COMMAND_RPC_GET_TRANSACTIONS_BY_PAYMENT_ID::request& req, K_COMMAND_RPC_GET_TRANSACTIONS_BY_PAYMENT_ID::response& res) {
+    if (!req.payment_id.size()) {
+        throw JsonRpc::JsonRpcError{ CORE_RPC_ERROR_CODE_WRONG_PARAM, "Wrong parameters, expected payment_id" };
+    }
+    logger(Logging::INFO, Logging::WHITE) << "RPC request came: Search by Payment ID: " << req.payment_id;
+        
+    Crypto::Hash paymentId;
+    std::vector<Transaction> transactions;
+        
+    if (!parse_hash256(req.payment_id, paymentId)) {
+        throw JsonRpc::JsonRpcError{
+            CORE_RPC_ERROR_CODE_WRONG_PARAM,
+            "Failed to parse Payment ID: " + req.payment_id + '.' };
+    }
+        
+    if (!m_core.getTransactionsByPaymentId(paymentId, transactions)) {
+        throw JsonRpc::JsonRpcError{
+            CORE_RPC_ERROR_CODE_INTERNAL_ERROR,
+            "Internal error: can't get transactions by Payment ID: " + req.payment_id + '.' };
+    }
+        
+    for (const Transaction& tx : transactions) {
+        f_transaction_short_response transaction_short;
+        uint64_t amount_in = 0;
+        get_inputs_money_amount(tx, amount_in);
+        uint64_t amount_out = get_outs_money_amount(tx);
+
+        transaction_short.hash = Common::podToHex(getObjectHash(tx));
+        transaction_short.fee = amount_in - amount_out;
+        transaction_short.amount_out = amount_out;
+        transaction_short.size = getObjectBinarySize(tx);
+        res.transactions.push_back(transaction_short);
+    }
+
+    res.status = CORE_RPC_STATUS_OK;
+    return true;
 }
 
 bool RpcServer::f_on_transactions_pool_json(const F_COMMAND_RPC_GET_POOL::request& req, F_COMMAND_RPC_GET_POOL::response& res) {
