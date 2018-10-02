@@ -270,6 +270,7 @@ bool check_inputs_types_supported(const TransactionPrefix& tx) {
 }
 
 bool check_outs_valid(const TransactionPrefix& tx, std::string* error) {
+  std::unordered_set<PublicKey> keys_seen;
   for (const TransactionOutput& out : tx.outputs) {
     if (out.target.type() == typeid(KeyOutput)) {
       if (out.amount == 0) {
@@ -285,6 +286,14 @@ bool check_outs_valid(const TransactionPrefix& tx, std::string* error) {
         }
         return false;
       }
+
+      if (keys_seen.find(boost::get<KeyOutput>(out.target).key) != keys_seen.end()) {
+       if (error) {
+          *error = "The same output target is present more than once";
+       }
+       return false;
+      }
+      keys_seen.insert(boost::get<KeyOutput>(out.target).key);
     } else if (out.target.type() == typeid(MultisignatureOutput)) {
       if (tx.version < TRANSACTION_VERSION_2) {
         *error = "Transaction contains multisignature output but its version is less than 2";
@@ -305,6 +314,13 @@ bool check_outs_valid(const TransactionPrefix& tx, std::string* error) {
           }
           return false;
         }
+        if (keys_seen.find(key) != keys_seen.end()) {
+          if (error) {
+           *error = "The same multisignature output target is present more than once";
+         }
+         return false;
+        }
+ 		    keys_seen.insert(key);
       }
     } else {
       if (error) {
