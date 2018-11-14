@@ -137,7 +137,7 @@ const int      RPC_DEFAULT_PORT                              = 31000;
 const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT                =  1000;
 const size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT                 =  5000;
 
-const size_t   P2P_CONNECTION_MAX_WRITE_BUFFER_SIZE          = 16 * 1024 * 1024; // 16 MB
+const size_t   P2P_CONNECTION_MAX_WRITE_BUFFER_SIZE          = 64 * 1024 * 1024; // 64 MB
 const uint32_t P2P_DEFAULT_CONNECTIONS_COUNT                 = 8;
 const size_t   P2P_DEFAULT_WHITELIST_CONNECTIONS_PERCENT     = 70;
 const uint32_t P2P_DEFAULT_HANDSHAKE_INTERVAL                = 60;            // seconds
@@ -154,7 +154,6 @@ const std::initializer_list<const char*> SEED_NODES = {
    "seed2.ultranote.org:30000",
    "seed3.ultranote.org:30000",
    "seed4.ultranote.org:30000",
-   "seed8.ultranote.org:30000",
 };
 
 struct CheckpointData {
