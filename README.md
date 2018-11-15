@@ -19,7 +19,7 @@ To build:
 Run these commands:
 ```
 cd ~
-sudo apt-get install build-essential git cmake libboost-all-dev libreadline-dev
+sudo apt-get install build-essential git cmake libboost-dev libreadline-dev
 git clone https://github.com/xun-project/UltraNote.git 
 cd UltraNote
 mkdir build
