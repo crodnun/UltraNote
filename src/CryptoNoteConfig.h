@@ -150,10 +150,10 @@ const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 5000;          //
 const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "0000000000000000000000000000000000000000000000000000000011111111";
 
 const std::initializer_list<const char*> SEED_NODES = {
-   "seed1.ultranote.org:30000",
-   "seed2.ultranote.org:30000",
-   "seed3.ultranote.org:30000",
-   "seed4.ultranote.org:30000",
+   "95.183.52.152:30000",
+   "45.76.140.212:30000",
+   "185.92.220.39:30000",
+   "95.179.128.172:30000",
 };
 
 struct CheckpointData {
