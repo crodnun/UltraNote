@@ -1,5 +1,6 @@
 ## Building UltraNote
 
+❮img src="https://www.ultranote.org/wp-content/uploads/2019/03/ultra.png" width="100" ❯
 On Apple or Linux and can't get readline installed? Run cmake with `cmake .. -DFORCE_READLINE=FALSE` to disable readline support.
 
 ### On Linux:
